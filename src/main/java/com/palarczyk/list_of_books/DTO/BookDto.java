@@ -1,27 +1,11 @@
-package com.palarczyk.list_of_books.domain;
+package com.palarczyk.list_of_books.DTO;
 
-import javax.persistence.*;
+public class BookDto {
 
-@Entity
-@Table(name = "books")
-public class Book {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String author;
     private String publisher;
-
-    public Book() {
-    }
-
-    public Book(Long id, String title, String author, String publisher) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.publisher = publisher;
-    }
 
     public Long getId() {
         return id;
