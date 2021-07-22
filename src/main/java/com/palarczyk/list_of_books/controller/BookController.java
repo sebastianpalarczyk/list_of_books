@@ -21,6 +21,7 @@ public class BookController {
         this.bookDtoAssembler = bookDtoAssembler;
     }
 
+    @CrossOrigin
     @PostMapping("/book")
     public BookDto create(@RequestBody BookDto bookDto){
         Book book = new Book();
@@ -31,6 +32,7 @@ public class BookController {
         return bookDtoAssembler.toDto(bookService.save(book));
     }
 
+    @CrossOrigin
     @GetMapping(value = "/books")
     public List<BookDto> all(){
         return bookService.all().stream()
