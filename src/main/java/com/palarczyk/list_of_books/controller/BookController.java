@@ -40,6 +40,24 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
+    @CrossOrigin
+    @PutMapping(value = "/book/{id}")
+    public BookDto update(@PathVariable Long id, @RequestBody BookDto bookDto) {
+        Book book = bookService.findById(id);
+        book.setAuthor(bookDto.getAuthor());
+        book.setPublisher(bookDto.getPublisher());
+        book.setTitle(bookDto.getTitle());
+        return bookDtoAssembler.toDto(bookService.save(book));
+    }
+
+    @CrossOrigin
+    @DeleteMapping(value = "/book/{id}")
+    public BookDto delete(@PathVariable Long id){
+        Book book = bookService.findById(id);
+        bookService.delete(book);
+        return bookDtoAssembler.toDto(book);
+    }
+
 
 
 
