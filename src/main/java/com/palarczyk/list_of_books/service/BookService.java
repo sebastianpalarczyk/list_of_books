@@ -5,7 +5,6 @@ import com.palarczyk.list_of_books.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {

@@ -23,7 +23,7 @@ public class BookController {
 
     @CrossOrigin
     @PostMapping("/book")
-    public BookDto create(@RequestBody BookDto bookDto){
+    public BookDto create(@RequestBody BookDto bookDto) {
         Book book = new Book();
         book.setId(bookDto.getId());
         book.setTitle(bookDto.getTitle());
@@ -34,10 +34,17 @@ public class BookController {
 
     @CrossOrigin
     @GetMapping(value = "/books")
-    public List<BookDto> all(){
+    public List<BookDto> all() {
         return bookService.all().stream()
                 .map(bookDtoAssembler::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "/book/{id}")
+    public BookDto get(@PathVariable Long id) {
+        Book book = bookService.findById(id);
+        return bookDtoAssembler.toDto(book);
     }
 
     @CrossOrigin
@@ -52,13 +59,12 @@ public class BookController {
 
     @CrossOrigin
     @DeleteMapping(value = "/book/{id}")
-    public BookDto delete(@PathVariable Long id){
+    public BookDto delete(@PathVariable Long id) {
         Book book = bookService.findById(id);
         bookService.delete(book);
+
         return bookDtoAssembler.toDto(book);
     }
-
-
 
 
 }
