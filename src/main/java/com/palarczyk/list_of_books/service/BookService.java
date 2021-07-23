@@ -5,6 +5,7 @@ import com.palarczyk.list_of_books.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -23,8 +24,13 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book findById(Long id){
-        return bookRepository.findById(id).get();
+    public Book findById(Long id) {
+        Optional<Book> book = bookRepository.findById(id);
+        return book.get();
+    }
+
+    public Book getBookById(Long id){
+        return bookRepository.getOne(id);
     }
 
     public void delete(Book book){

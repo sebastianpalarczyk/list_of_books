@@ -1,26 +1,38 @@
 document.addEventListener("DOMContentLoaded", function() {
     const tbody = document.querySelector("tbody");
-
+    
     function addBookToDom(book) {
         const row = document.createElement("tr");
 
         const title = document.createElement("td");
         const titleAnchor = document.createElement("a");
         const divId = document.createElement("div");
+        const divButton = document.createElement("div");
+        const buttonUpdate = document.createElement("button");
+        const buttonDelete = document.createElement("button");
+        
         titleAnchor.dataset.id = book.id;
         titleAnchor.innerText = book.title;
-        divId.classList.add("hidden");
+
+       // divId.classList.add("hidden");
+        divButton.classList.add("hidden");
+        buttonUpdate.innerText = "update";
+        buttonUpdate.classList.add("button")
+        buttonDelete.innerText = "delete";
+        
+        
         title.appendChild(titleAnchor);
-        title.appendChild(divId);
-
-
+        title.appendChild(divButton);
 
         titleAnchor.addEventListener("mouseover", function() {
-            $.getJSON({
-                url: `http://localhost:8080/book/${this.dataset.id}`,
-            }).done(() => {
-                divId.innerText = "ID: "+book.id;
-                divId.classList.toggle("hidden");
+            fetch(`http://localhost:8080/book/${this.dataset.id}`,{
+                method: "GET"
+            }).then(() => {
+             divButton.appendChild(buttonUpdate);
+             divButton.appendChild(buttonDelete);
+             divButton.classList.toggle("hidden");
+             divId.innerText = this.dataset.id;
+             title.appendChild(divId);
             })
         });
 
@@ -36,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         tbody.appendChild(row);
 
-        titleAnchor.addEventListener("click", function () {
+        buttonDelete.addEventListener("click", function () {
             fetch(`http://localhost:8080/book/${book.id}`, {
                 method: "DELETE"
             }).then(response => {
@@ -52,19 +64,31 @@ document.addEventListener("DOMContentLoaded", function() {
             })
         })
 
-        updateBook();
+        buttonUpdate.addEventListener("click",updateBook);
+    
     }
 
     const titleForm = document.getElementById("title");
     const authorForm = document.getElementById("author");
     const publisherForm = document.getElementById("publisher");
     const button = document.querySelector("button");
-
+    const buttons = document.querySelectorAll(".batton")
+    console.log(buttons)
+    
+    
++
     button.addEventListener("click", function (event) {
         event.preventDefault();
 
-        const id = document.querySelectorAll("a").length;
+        const anchors = document.querySelectorAll("a");
+        const tab = new Array();
 
+        anchors.forEach(e=>{
+            tab.push(e.dataset.id);
+        })
+        
+        const id = tab[length]+1;
+        
         const book = {
 
             id: id+1,
@@ -79,32 +103,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(book)
-        }).then(addBookToDom(book));
-
-        // $.post({
-        //     url: "http://localhost:8080/book",
-        //     data: JSON.stringify(book),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // }).done(() => {
-        //     console.log("Książka dodana!")
-        // }).fail(() => {
-        //     console.log("Nie udało się dodać książki")
-        // })
-        //  addBookToDom(book);
+        }).then(addBookToDom(book))
+        //.then(location.reload());
     });
 
     function updateBook(){
     
-    const rows = document.querySelectorAll("tr");
+    
     const button = document.querySelector("button");
+    const row = this.parentElement.parentElement.parentElement;
+    const anchor = row.firstChild.firstChild;
+    console.log(anchor)
 
-    rows.forEach(row => row.addEventListener("click", function(event){
+  
         
         const children = row.children;
-        const bookId = children[0].firstChild.dataset;
+        console.log(children)
+        const bookId = anchor.dataset.id;
+        console.log("id "+bookId)
         titleForm.value = children[0].innerText;
+        console.log("title "+titleForm)
         authorForm.value = children[1].innerText;
         publisherForm.value = children[2].innerText;
 
@@ -112,32 +130,51 @@ document.addEventListener("DOMContentLoaded", function() {
             event.preventDefault();
 
             const book = {
-                id: bookId.id,
+                id: bookId,
                 title: titleForm.value,
                 author: authorForm.value,
                 publisher: publisherForm.value,
             }
+            console.log("ID book "+book.id)
 
             children[0].innerText = titleForm.value;
             children[1].innerText = authorForm.value;
             children[2].innerText = publisherForm.value;
 
-            $.ajax({
-                url: `http://localhost:8080/books/${bookId.id}`,
-                data: JSON.stringify(book),
-                contentType: "application/json",
-                method: "PUT"
-            }).done(() => {
-                console.log("Książka zaaktualizowana!")
-            }).fail(()=>{
-                console.log("Nie udało się zaaktualizować książki")
+            fetch(`http://localhost:8080/book/${bookId}`,{
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(book),
+            }).then(response=>{
+                response.json()
             })
+            .then(
+                console.log(json)
+            )
+
+        
+
+            // $.ajax({
+            //     url: `http://localhost:8080/book/${bookId.id}`,
+            //     data: JSON.stringify(book),
+            //     contentType: "application/json",
+            //     method: "PUT"
+            // }).done(() => {
+            //     console.log("Książka zaaktualizowana!")
+            // }).fail(()=>{
+            //     console.log("Nie udało się zaaktualizować książki")
+            // })
+
         })
         
-    }))
+    
 
 
     }
+
+    
 
 
     // ASYNCHRONICZNOŚĆ
@@ -156,4 +193,5 @@ document.addEventListener("DOMContentLoaded", function() {
     .then(data => {
             data.forEach(addBookToDom);
         })
+
 })

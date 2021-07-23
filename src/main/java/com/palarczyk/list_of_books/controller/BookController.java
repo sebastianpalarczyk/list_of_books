@@ -42,7 +42,7 @@ public class BookController {
 
     @CrossOrigin
     @GetMapping(value = "/book/{id}")
-    public BookDto get(@PathVariable Long id) {
+    public BookDto one(@PathVariable Long id) {
         Book book = bookService.findById(id);
         return bookDtoAssembler.toDto(book);
     }
@@ -50,7 +50,7 @@ public class BookController {
     @CrossOrigin
     @PutMapping(value = "/book/{id}")
     public BookDto update(@PathVariable Long id, @RequestBody BookDto bookDto) {
-        Book book = bookService.findById(id);
+        Book book = bookService.getBookById(id);
         book.setAuthor(bookDto.getAuthor());
         book.setPublisher(bookDto.getPublisher());
         book.setTitle(bookDto.getTitle());
@@ -62,7 +62,6 @@ public class BookController {
     public BookDto delete(@PathVariable Long id) {
         Book book = bookService.findById(id);
         bookService.delete(book);
-
         return bookDtoAssembler.toDto(book);
     }
 
