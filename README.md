@@ -38,9 +38,8 @@ You can find the demo [here](https://palarczykenterprises.com/books/)
 
 Project is created with:
 
-- Java
-- Java EE
-- Spring Boot
-- Apache Tomcat
-- MySQL Connector in Java
-- Model mapper
+* Java
+* Spring Boot
+* Spring Data JPA
+* Spring Data JDBC
+* Hibernate
